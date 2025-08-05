@@ -1,10 +1,10 @@
-"use client"
+"use client";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-const  SignUpPage = ()=> {
-  const router  = useRouter()
-  const [formdata , setFormdata] = useState({
+const SignUpPage = () => {
+  const router = useRouter();
+  const [formdata, setFormdata] = useState({
     firstname: "",
     lastname: "",
     email: "",
@@ -12,56 +12,54 @@ const  SignUpPage = ()=> {
     confirmpassword: "",
     phonenumber: "",
     fitsttercondition: false,
-    secondcondition: false
+    secondcondition: false,
   });
-  const [error , setError] = useState("")
+  const [error, setError] = useState("");
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault(); // ✅ Prevent page refresh
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // ✅ Prevent page refresh
 
-  if (formdata.password !== formdata.confirmpassword) {
-    setError("Passwords do not match");
-    return;
-  }
-
-  try {
-    const response = await fetch("http://localhost:5000/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json", // ✅ Fix typo: "Content-Yype" -> "Content-Type"
-      },
-      body: JSON.stringify({
-        firstname: formdata.firstname,
-        lastname: formdata.lastname,
-        email: formdata.email,
-        password: formdata.password,
-        phonenumber: formdata.phonenumber,
-      }),
-    });
-
-    const data = await response.json();
-
-    if(response.ok){
-      router.push("/")      
+    if (formdata.password !== formdata.confirmpassword) {
+      setError("Passwords do not match");
+      return;
     }
-    if(data.error){
-      setError(data.error)
+
+    try {
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstname: formdata.firstname,
+          lastname: formdata.lastname,
+          email: formdata.email,
+          password: formdata.password,
+          phonenumber: formdata.phonenumber,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        router.push("/");
+      }
+      if (data.error) {
+        setError(data.error);
+      }
+      if (!response.ok) {
+        setError(data.error || "Something went wrong");
+      } else {
+        setError(""); // Clear error on success
+        // Optional: Redirect or reset form
+      }
+    } catch (error) {
+      setError((error as Error).message);
     }
-    if (!response.ok) {
-      setError(data.error || "Something went wrong");
-    } else {
-      setError(""); // Clear error on success
-      // Optional: Redirect or reset form
-    }
-  } catch (error) {
-    setError((error as Error).message);
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-white">
-     
-
       {/* Sign Up Content */}
       <section className="py-16">
         <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
@@ -74,8 +72,10 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                 Join ShopEasy and start shopping today
               </p>
             </div>
-            {error &&(
-              <div className="text-white p-4 bg-red-400 my-2 rounded-3xl">{error}</div>
+            {error && (
+              <div className="text-white p-4 bg-red-400 my-2 rounded-3xl">
+                {error}
+              </div>
             )}
 
             <form className="space-y-6" onSubmit={handleSubmit}>
@@ -89,8 +89,9 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                     required
                     className="w-full border text-black border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                     placeholder="John"
-                    onChange={(e)=> setFormdata({...formdata, firstname: e.target.value})}
-
+                    onChange={(e) =>
+                      setFormdata({ ...formdata, firstname: e.target.value })
+                    }
                   />
                 </div>
                 <div>
@@ -102,7 +103,9 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                     required
                     className="w-full border border-blue-200 text-black rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                     placeholder="Doe"
-                    onChange={(e)=> setFormdata({...formdata, lastname: e.target.value})}
+                    onChange={(e) =>
+                      setFormdata({ ...formdata, lastname: e.target.value })
+                    }
                   />
                 </div>
               </div>
@@ -116,7 +119,9 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                   required
                   className="w-full border border-blue-200 rounded-lg px-4 py-3  text-black focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                   placeholder="Enter your email"
-                  onChange={(e)=> setFormdata({...formdata, email: e.target.value})}
+                  onChange={(e) =>
+                    setFormdata({ ...formdata, email: e.target.value })
+                  }
                 />
               </div>
 
@@ -128,7 +133,9 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                   type="tel"
                   className="w-full border text-black border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                   placeholder="1234567890"
-                  onChange={(e)=> setFormdata({...formdata, phonenumber: e.target.value})}
+                  onChange={(e) =>
+                    setFormdata({ ...formdata, phonenumber: e.target.value })
+                  }
                 />
               </div>
 
@@ -141,7 +148,9 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                   required
                   className="w-full border text-black border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                   placeholder="Create a password"
-                  onChange={(e)=> setFormdata({...formdata, password: e.target.value})}
+                  onChange={(e) =>
+                    setFormdata({ ...formdata, password: e.target.value })
+                  }
                 />
                 <p className="text-blue-600 text-sm mt-1">
                   Must be at least 8 characters long
@@ -157,7 +166,12 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                   required
                   className="w-full border text-black border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                   placeholder="Confirm your password"
-                  onChange={(e)=> setFormdata({...formdata, confirmpassword: e.target.value})}
+                  onChange={(e) =>
+                    setFormdata({
+                      ...formdata,
+                      confirmpassword: e.target.value,
+                    })
+                  }
                 />
               </div>
 
@@ -177,9 +191,11 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                     type="checkbox"
                     id="terms"
                     required
-                    onChange={(e)=> setFormdata({...formdata, fitsttercondition: true})}
+                    onChange={(e) =>
+                      setFormdata({ ...formdata, fitsttercondition: true })
+                    }
                     className="w-4 h-4 text-blue-600 border-blue-300 rounded focus:ring-blue-500"
-                    />
+                  />
                   <label htmlFor="terms" className="ml-2 text-blue-700">
                     I agree to the{" "}
                     <a href="#" className="text-blue-600 hover:text-blue-800">
@@ -196,7 +212,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
               <button
                 type="submit"
                 className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                >
+              >
                 Create Account
               </button>
             </form>
@@ -368,5 +384,5 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       </footer>
     </div>
   );
-}
-export default SignUpPage
+};
+export default SignUpPage;
