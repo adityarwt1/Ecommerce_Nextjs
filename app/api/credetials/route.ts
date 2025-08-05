@@ -14,7 +14,9 @@ export async function POST(req: NextRequest) {
 
     const cookieData: any = jwt.verify(token, process.env.JWT_SECRET as string);
     await connectdb();
-    const data = await User.findOne({ email: cookieData?.email });
+    const data = await User.findOne({ email: cookieData?.email }).select(
+      "email firstname lastname phonenumber"
+    );
     await disconnectdb();
     return NextResponse.json({ data }, { status: 200 });
   } catch (error) {
