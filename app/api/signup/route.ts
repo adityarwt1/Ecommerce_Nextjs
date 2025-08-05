@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+import { issuername } from "@/utils/commonvariable";
 
 export async function POST(req: NextRequest) {
   try {
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
         _id: user._id,
       };
       const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
-        issuer: "Aditya Rawat",
+        issuer: issuername,
       });
       (await cookies()).set("ecommerce_token", token, {
         httpOnly: true,

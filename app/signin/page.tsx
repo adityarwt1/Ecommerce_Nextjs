@@ -1,7 +1,33 @@
+"use client";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+
 export default function SignInPage() {
+  const router = useRouter();
+  const [formaData, setFormdata] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...formaData }),
+      });
+      if (response.status == 200) {
+        router.push("/");
+      }
+    } catch (error) {
+      console.log((error as Error).message);
+    }
+  };
   return (
     <div className="min-h-screen bg-white">
-     
       {/* Sign In Content */}
       <section className="py-16">
         <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
@@ -13,13 +39,16 @@ export default function SignInPage() {
               <p className="text-blue-700">Sign in to your ShopEasy account</p>
             </div>
 
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label className="block text-blue-900 font-medium mb-2">
                   Email Address
                 </label>
                 <input
                   type="email"
+                  onChange={(e) =>
+                    setFormdata({ ...formaData, email: e.target.value })
+                  }
                   required
                   className="w-full border border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                   placeholder="Enter your email"
@@ -32,6 +61,9 @@ export default function SignInPage() {
                 </label>
                 <input
                   type="password"
+                  onChange={(e) =>
+                    setFormdata({ ...formaData, password: e.target.value })
+                  }
                   required
                   className="w-full border border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                   placeholder="Enter your password"
