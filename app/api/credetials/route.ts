@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import User from "@/models/User";
-import { connectdb, disconnectdb } from "@/lib/mongodb";
+import { connectdb } from "@/lib/mongodb";
 export async function POST(req: NextRequest) {
   try {
     const token = (await cookies()).get("ecommerce_token")?.value;
@@ -17,7 +17,6 @@ export async function POST(req: NextRequest) {
     const data = await User.findOne({ email: cookieData?.email }).select(
       "firstname"
     );
-    await disconnectdb();
     return NextResponse.json({ data }, { status: 200 });
   } catch (error) {
     console.log((error as Error).message);
