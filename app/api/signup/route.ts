@@ -2,6 +2,8 @@ import { connectdb, disconnectdb } from "@/lib/mongodb";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,6 +36,20 @@ export async function POST(req: NextRequest) {
     await user.save();
     await disconnectdb();
     if (user) {
+      const payload = {
+        email: user.email,
+        _id: user._id,
+      };
+      const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
+        issuer: "Aditya Rawat",
+      });
+      (await cookies()).set("ecommerce_token", token, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production" ? true : false,
+        maxAge: 7 * 24 * 60 * 60,
+      });
+
       return NextResponse.json(
         { message: "Signup successfully" },
         { status: 201 }
