@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import LoadingProfileLogo from "./LoadingProfileLogo"; // make sure path is correct
 
 export default function Navbar() {
   const [userData, setUserData] = useState<null | {
@@ -10,6 +11,8 @@ export default function Navbar() {
     email: string;
     phonenumber: number;
   }>(null);
+
+  const [loading, setLoading] = useState(true);
 
   const fetchUserInformaFromcookie = async () => {
     try {
@@ -21,6 +24,8 @@ export default function Navbar() {
       setUserData(data);
     } catch (error) {
       console.log((error as Error).message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,13 +58,15 @@ export default function Navbar() {
             </a>
           </nav>
 
-          {/* Right Section: Cart + User Auth/Profile */}
+          {/* Right Section */}
           <div className="flex items-center space-x-4">
             <a href="/cart" className="text-blue-600 hover:text-blue-800">
               Cart (0)
             </a>
 
-            {userData ? (
+            {loading ? (
+              <LoadingProfileLogo />
+            ) : userData ? (
               <div className="flex items-center space-x-2">
                 {/* Profile Letter Logo */}
                 <a
@@ -67,8 +74,18 @@ export default function Navbar() {
                   className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-600 text-white font-bold text-sm hover:bg-blue-700 transition"
                   title="Go to Profile"
                 >
-                  {userData.firstname?.charAt(0).toUpperCase()}
+                  {userData.firstname.charAt(0).toUpperCase()}
                 </a>
+
+                {/* Optional user info */}
+                <div className="hidden sm:flex flex-col">
+                  <span className="text-sm font-medium text-gray-700">
+                    {userData.firstname} {userData.lastname}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    {userData.email}
+                  </span>
+                </div>
               </div>
             ) : (
               <>
