@@ -1,4 +1,23 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 export default function Navbar() {
+  const [userData, setUserData] = useState();
+  const fetchUserInformaFromcookie = async () => {
+    try {
+      const response = await fetch("/api/credetials", {
+        method: "POST",
+      });
+      const { data } = await response.json();
+      setUserData(data);
+    } catch (error) {
+      console.log((error as Error).message);
+    }
+  };
+  useEffect(() => {
+    fetchUserInformaFromcookie();
+  }, []);
   return (
     <header className="bg-white border-b border-blue-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
