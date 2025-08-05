@@ -1,3 +1,4 @@
+import { connectdb } from "@/lib/mongodb";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -11,6 +12,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await 
+    await connectdb()
+    const user = new 
   } catch (error) {}
 }
