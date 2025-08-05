@@ -10,11 +10,13 @@ export default function Navbar() {
         method: "POST",
       });
       const { data } = await response.json();
+      console.log(data);
       setUserData(data);
     } catch (error) {
       console.log((error as Error).message);
     }
   };
+
   useEffect(() => {
     fetchUserInformaFromcookie();
   }, []);
